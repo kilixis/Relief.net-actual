@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Emergency Tracker - Login</title>
+    <link rel="stylesheet" href="styles.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+  </head>
+  <body>
+    <div id="authSection" class="container">
+      <div class="auth-container">
+        <div class="auth-header">
+          <h1><span class="icon">🆘</span> Emergency Tracker</h1>
+          <p id="authSubtitle">Sign in to access emergency services</p>
+        </div>
+
+        <form id="loginForm" class="auth-form">
+          <div class="form-group">
+            <label for="loginEmail">Email Address</label>
+            <input
+              type="email"
+              id="loginEmail"
+              placeholder="Enter your email"
+              required
+            />
+          </div>
+          <div class="form-group">
+            <label for="loginPassword">Password</label>
+            <input
+              type="password"
+              id="loginPassword"
+              placeholder="Enter your password"
+              required
+            />
+          </div>
+          <button type="submit" class="btn btn-primary">Sign In</button>
+          <div class="toggle-form">
+            <p>
+              Don't have an account?
+              <a href="#" id="showRegister">Create one here</a>
+            </p>
+          </div>
+        </form>
+
+       
+        <form id="registerForm" class="auth-form" style="display: none">
+          <div class="form-group">
+            <label for="name">Full Name</label>
+            <input
+              type="text"
+              id="name"
+              placeholder="Enter your full name"
+              required
+            />
+          </div>
+          <div class="form-group">
+            <label for="email">Email Address</label>
+            <input
+              type="email"
+              id="email"
+              placeholder="Enter your email"
+              required
+            />
+          </div>
+          <div class="form-group">
+            <label for="phone">Phone Number</label>
+            <input
+              type="tel"
+              id="phone"
+              placeholder="Enter your phone number"
+              required
+            />
+          </div>
+          <div class="form-group">
+            <label for="dob">Date of Birth</label>
+            <input type="date" id="dob" required />
+          </div>
+          <div class="form-group">
+            <label for="bloodGroup">Blood Group</label>
+            <input type="text" id="bloodGroup" placeholder="e.g. A+, O-" />
+          </div>
+          <div class="form-group">
+            <label for="allergies">Medical Allergies</label>
+            <input
+              type="text"
+              id="allergies"
+              placeholder="List allergies if any"
+            />
+          </div>
+          <div class="form-group">
+            <label for="emergencyContact">Emergency Contact</label>
+            <input
+              type="text"
+              id="emergencyContact"
+              placeholder="Name and number"
+            />
+          </div>
+          <div class="form-group">
+            <label for="password">Password</label>
+            <input
+              type="password"
+              id="password"
+              placeholder="Create a password"
+              required
+            />
+          </div>
+          <button type="submit" class="btn btn-primary">Create Account</button>
+          <div class="toggle-form">
+            <p>
+              Already have an account?
+              <a href="#" id="showLogin">Sign in here</a>
+            </p>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <script>
+      const showRegister = document.getElementById("showRegister");
+      const showLogin = document.getElementById("showLogin");
+      const loginForm = document.getElementById("loginForm");
+      const registerForm = document.getElementById("registerForm");
+      const authSubtitle = document.getElementById("authSubtitle");
+
+      showRegister.addEventListener("click", (e) => {
+        e.preventDefault();
+        loginForm.style.display = "none";
+        registerForm.style.display = "block";
+        authSubtitle.textContent = "Create an account to continue";
+      });
+
+      showLogin.addEventListener("click", (e) => {
+        e.preventDefault();
+        loginForm.style.display = "block";
+        registerForm.style.display = "none";
+        authSubtitle.textContent = "Sign in to access emergency services";
+      });
+
+      registerForm.addEventListener("submit", (e) => {
+        e.preventDefault();
+        
+        window.location.href = "index.html";
+      });
+      loginForm.addEventListener("submit", (e) => {
+        e.preventDefault();
+    
+
+       
+        window.location.href = "index.html"; 
+      });
+    </script>
+  </body>
+</html>

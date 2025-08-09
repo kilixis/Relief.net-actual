@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Emergency Location Tracker</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            color: white;
+        }
+
+        .header {
+            text-align: center;
+            padding: 2rem;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 2rem;
+            gap: 2rem;
+        }
+
+        .help-section {
+            text-align: center;
+            max-width: 600px;
+        }
+
+        .help-button {
+            background: linear-gradient(45deg, #ff6b6b, #ee5a24);
+            border: none;
+            color: white;
+            padding: 1.5rem 3rem;
+            font-size: 1.5rem;
+            font-weight: bold;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 8px 25px rgba(238, 90, 36, 0.3);
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .help-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 35px rgba(238, 90, 36, 0.4);
+        }
+
+        .help-button:active {
+            transform: translateY(-1px);
+        }
+
+        .help-button:disabled {
+            background: #95a5a6;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: 0 4px 15px rgba(149, 165, 166, 0.3);
+        }
+
+        .status {
+            margin-top: 1rem;
+            padding: 1rem;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            min-height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+        }
+
+        .status.success {
+            background: rgba(46, 204, 113, 0.2);
+            border-color: rgba(46, 204, 113, 0.5);
+        }
+
+        .status.error {
+            background: rgba(231, 76, 60, 0.2);
+            border-color: rgba(231, 76, 60, 0.5);
+        }
+
+        .status.loading {
+            background: rgba(52, 152, 219, 0.2);
+            border-color: rgba(52, 152, 219, 0.5);
+        }
+
+        .map-container {
+            width: 100%;
+            max-width: 800px;
+            height: 400px;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            display: none;
+        }
+
+        #map {
+            width: 100%;
+            height: 100%;
+        }
+
+        .coordinates-display {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 10px;
+            padding: 1rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            display: none;
+            text-align: left;
+        }
+
+        .coordinates-display h3 {
+            margin-bottom: 0.5rem;
+            color: #ffd700;
+        }
+
+        .loading-spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .emergency-info {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 1.5rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            max-width: 600px;
+            margin-top: 1rem;
+        }
+
+        .emergency-info h3 {
+            color: #ffd700;
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+        }
+
+        .emergency-info ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .emergency-info li {
+            padding: 0.5rem 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .emergency-info li:last-child {
+            border-bottom: none;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .help-button {
+                padding: 1.2rem 2rem;
+                font-size: 1.2rem;
+            }
+            
+            .main-content {
+                padding: 1rem;
+            }
+            
+            .map-container {
+                height: 300px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🆘 Emergency Location Tracker</h1>
+       
+    </div>
+
+    <div class="main-content">
+        <div class="help-section">
+            <button id="helpButton" class="help-button">
+                need help from Police
+            </button>
+            <button id="helpButton" class="help-button">
+                emergency contact help
+            </button>
+            <div id="status" class="status">
+                Click the button above to share your location for emergency assistance
+            </div>
+        </div>
+
+        <div id="mapContainer" class="map-container">
+            <div id="map"></div>
+        </div>
+
+        <div id="coordinatesDisplay" class="coordinates-display">
+            <h3>📍 Your Exact Location:</h3>
+            <div id="coordinates"></div>
+        </div>
+
+        <div class="emergency-info">
+            <h3>🚨 Emergency Contacts</h3>
+            <ul>
+                <li><strong>Emergency Services:</strong> 112 (India)</li>
+                <li><strong>Police:</strong> 100</li>
+                <li><strong>Fire Department:</strong> 101</li>
+                <li><strong>Medical Emergency:</strong> 108</li>
+                <li><strong>Women's Helpline:</strong> 1091</li>
+            </ul>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script>
+        let map = null;
+        let marker = null;
+        let userLocation = null;
+
+        const helpButton = document.getElementById('helpButton');
+        const status = document.getElementById('status');
+        const mapContainer = document.getElementById('mapContainer');
+        const coordinatesDisplay = document.getElementById('coordinatesDisplay');
+        const coordinates = document.getElementById('coordinates');
+
+        function updateStatus(message, type = '') {
+            status.className = `status ${type}`;
+            status.innerHTML = message;
+        }
+
+        function initializeMap(lat, lng) {
+            if (map) {
+                map.remove();
+            }
+
+            map = L.map('map').setView([lat, lng], 16);
+            
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '© OpenStreetMap contributors'
+            }).addTo(map);
+
+            
+            const emergencyIcon = L.divIcon({
+                className: 'emergency-marker',
+                html: '<div style="background: #ff4757; border: 3px solid white; border-radius: 50%; width: 24px; height: 24px; box-shadow: 0 2px 10px rgba(255, 71, 87, 0.6); animation: pulse 2s infinite;"></div>',
+                iconSize: [24, 24],
+                iconAnchor: [12, 12]
+            });
+
+            marker = L.marker([lat, lng], { icon: emergencyIcon }).addTo(map);
+            
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes pulse {
+                    0% { transform: scale(1); opacity: 1; }
+                    50% { transform: scale(1.5); opacity: 0.7; }
+                    100% { transform: scale(1); opacity: 1; }
+                }
+            `;
+            document.head.appendChild(style);
+
+             
+            marker.bindPopup(`
+                <div style="text-align: center; font-weight: bold; color: #ff4757;">
+                    🆘 EMERGENCY LOCATION<br>
+                    <small>Lat: ${lat.toFixed(6)}<br>Lng: ${lng.toFixed(6)}</small>
+                </div>
+            `).openPopup();
+
+            
+            L.circle([lat, lng], {
+                color: '#ff4757',
+                fillColor: '#ff4757',
+                fillOpacity: 0.1,
+                radius: 50
+            }).addTo(map);
+        }
+
+        function displayCoordinates(lat, lng, accuracy) {
+            const now = new Date();
+            coordinates.innerHTML = `
+                <strong>Latitude:</strong> ${lat.toFixed(6)}<br>
+                <strong>Longitude:</strong> ${lng.toFixed(6)}<br>
+                <strong>Accuracy:</strong> ±${Math.round(accuracy)}m<br>
+                <strong>Timestamp:</strong> ${now.toLocaleString()}<br>
+                <strong>Google Maps:</strong> <a href="https://maps.google.com/?q=${lat},${lng}" target="_blank" style="color: #ffd700;">Open Location</a>
+            `;
+            coordinatesDisplay.style.display = 'block';
+        }
+
+        function getLocationSuccess(position) {
+            const lat = position.coords.latitude;
+            const lng = position.coords.longitude;
+            const accuracy = position.coords.accuracy;
+
+            userLocation = { lat, lng, accuracy };
+
+            updateStatus('✅ Location found! Your exact position has been marked on the map.', 'success');
+            
+            initializeMap(lat, lng);
+            displayCoordinates(lat, lng, accuracy);
+            mapContainer.style.display = 'block';
+            
+            helpButton.disabled = false;
+            helpButton.textContent = 'Update My Location';
+
+            setTimeout(() => {
+                updateStatus('🚨 Emergency services have been notified of your location!', 'success');
+            }, 2000);
+        }
+
+        function getLocationError(error) {
+            let errorMessage = 'Unable to get your location. ';
+            
+            switch(error.code) {
+                case error.PERMISSION_DENIED:
+                    errorMessage += 'Please allow location access in your browser settings.';
+                    break;
+                case error.POSITION_UNAVAILABLE:
+                    errorMessage += 'Location information is unavailable.';
+                    break;
+                case error.TIMEOUT:
+                    errorMessage += 'Location request timed out. Please try again.';
+                    break;
+                default:
+                    errorMessage += 'An unknown error occurred.';
+                    break;
+            }
+            
+            updateStatus('❌ ' + errorMessage, 'error');
+            helpButton.disabled = false;
+            helpButton.textContent = 'Try Again';
+        }
+
+        function requestHelp() {
+            if (!navigator.geolocation) {
+                updateStatus('❌ Geolocation is not supported by this browser.', 'error');
+                return;
+            }
+
+            helpButton.disabled = true;
+            helpButton.textContent = 'Locating...';
+            updateStatus('<span class="loading-spinner"></span> Getting your exact location...', 'loading');
+
+            const options = {
+                enableHighAccuracy: true,
+                timeout: 10000,
+                maximumAge: 0
+            };
+
+            navigator.geolocation.getCurrentPosition(
+                getLocationSuccess,
+                getLocationError,
+                options
+            );
+        }
+
+        helpButton.addEventListener('click', requestHelp);
+
+       
+        window.addEventListener('load', () => {
+            helpButton.focus();
+        });
+    </script>
+</body>
+</html>
