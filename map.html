@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ReliefNet - Map</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@3.2.12/dist/leaflet-routing-machine.css" />
+</head>
+<body>
+    <div class="map-container">
+        <header class="map-header">
+            <h1>ReliefNet</h1>
+            <div class="header-controls">
+                <select id="role-select" class="role-select">
+                    <option value="victim">Victim</option>
+                    <option value="volunteer">Volunteer</option>
+                </select>
+                <button class="btn btn-secondary" onclick="window.location.href='index.html'">Home</button>
+            </div>
+        </header>
+
+        <main class="map-main">
+            <aside class="sidebar">
+                <div class="sidebar-content">
+                    <div class="form-card">
+                        <h2 id="sidebar-title">Submit Emergency</h2>
+                        
+                        <div class="location-info">
+                            <label>Your Location</label>
+                            <div id="location-display" class="location-text">Locating… allow browser location</div>
+                        </div>
+
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="name">Your Name</label>
+                                <input type="text" id="name" placeholder="Full name" class="form-input">
+                            </div>
+                            <div class="form-group">
+                                <label for="phone">Phone Number</label>
+                                <input type="tel" id="phone" placeholder="+91 98765 43210" class="form-input">
+                            </div>
+                        </div>
+
+                        <div id="victim-form" class="victim-form">
+                            <div class="form-group">
+                                <label for="disaster-type">Disaster Type</label>
+                                <select id="disaster-type" class="form-select">
+                                    <option value="earthquake">Earthquake</option>
+                                    <option value="flood">Flood</option>
+                                    <option value="fire">Fire</option>
+                                    <option value="cyclone">Cyclone</option>
+                                    <option value="landslide">Landslide</option>
+                                    <option value="other">Other</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="resources">Resources Needed (comma separated)</label>
+                                <input type="text" id="resources" placeholder="water, food, shelter" class="form-input">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="description">Description</label>
+                                <textarea id="description" placeholder="Describe your situation…" rows="4" class="form-textarea"></textarea>
+                            </div>
+
+                            <button id="submit-btn" class="btn btn-primary btn-full" disabled>Submit Request</button>
+                        </div>
+
+                        <div id="volunteer-form" class="volunteer-form" style="display: none;">
+                            <label>Active Requests</label>
+                            <div id="requests-list" class="requests-list">
+                                <div class="no-requests">No requests yet.</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="footer-note">
+                        Routes powered by OSRM demo; map © OpenStreetMap contributors.
+                    </div>
+                </div>
+            </aside>
+
+            <section class="map-section">
+                <div id="map" class="map"></div>
+            </section>
+        </main>
+    </div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet-routing-machine@3.2.12/dist/leaflet-routing-machine.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>

@@ -1,26 +1,28 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>ReliefNet — Disaster Help & Volunteer Map</title>
-    <meta name="description" content="ReliefNet connects victims with volunteers via a live OpenStreetMap — submit emergencies, view red pins, and respond with routing." />
-    <meta name="author" content="ReliefNet" />
-
-    <link rel="canonical" href="/" />
-
-    <meta property="og:title" content="ReliefNet — Disaster Help & Volunteer Map" />
-    <meta property="og:description" content="Live OpenStreetMap with emergency pins. Victims request help, volunteers respond and navigate." />
-    <meta property="og:type" content="website" />
-    <meta property="og:image" content="https://lovable.dev/opengraph-image-p98pqg.png" />
-
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:site" content="@lovable_dev" />
-    <meta name="twitter:image" content="https://lovable.dev/opengraph-image-p98pqg.png" />
-  </head>
-
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ReliefNet - Disaster Help & Volunteer Map</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="icon" href="favicon.ico">
+</head>
+<body>
+    <main class="home-container">
+        <section class="hero">
+            <h1>ReliefNet — Disaster Help & Volunteer Map</h1>
+            <p class="hero-description">
+                Connect victims with volunteers in real-time. Submit emergencies as red pins on OpenStreetMap and navigate to respond safely.
+            </p>
+            <div class="hero-buttons">
+                <button class="btn btn-primary" onclick="window.location.href='map.html?role=victim'">I need help</button>
+                <button class="btn btn-secondary" onclick="window.location.href='map.html?role=volunteer'">I want to help</button>
+            </div>
+            <div class="info-card">
+                <p>Privacy-first demo. No signup yet; we'll add secure auth and a shared backend next.</p>
+            </div>
+        </section>
+    </main>
+</body>
 </html>
