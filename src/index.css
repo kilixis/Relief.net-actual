@@ -39,20 +39,24 @@ All colors MUST be HSL.
     --radius: 0.5rem;
 
     --sidebar-background: 0 0% 98%;
-
     --sidebar-foreground: 240 5.3% 26.1%;
-
     --sidebar-primary: 240 5.9% 10%;
-
     --sidebar-primary-foreground: 0 0% 98%;
-
     --sidebar-accent: 240 4.8% 95.9%;
-
     --sidebar-accent-foreground: 240 5.9% 10%;
-
     --sidebar-border: 220 13% 91%;
-
     --sidebar-ring: 217.2 91.2% 59.8%;
+
+    /* Custom design tokens */
+    --primary-glow: 222.2 80% 40%;
+    --accent-strong: 199 89% 48%;
+    --accent-soft: 199 89% 96%;
+
+    --gradient-primary: linear-gradient(135deg, hsl(var(--accent-strong) / 0.9), hsl(var(--primary-glow) / 0.9));
+    --gradient-subtle: linear-gradient(180deg, hsl(var(--background)), hsl(var(--accent-soft)));
+    --shadow-elegant: 0 10px 30px -10px hsl(var(--accent-strong) / 0.25);
+    --shadow-glow: 0 0 40px hsl(var(--accent-strong) / 0.35);
+    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
   .dark {
@@ -102,4 +106,12 @@ All colors MUST be HSL.
   body {
     @apply bg-background text-foreground;
   }
+}
+
+@layer utilities {
+  .bg-gradient-primary { background-image: var(--gradient-primary); }
+  .bg-gradient-subtle { background-image: var(--gradient-subtle); }
+  .shadow-elegant { box-shadow: var(--shadow-elegant); }
+  .shadow-glow { box-shadow: var(--shadow-glow); }
+  .transition-smooth { transition: var(--transition-smooth); }
 }
