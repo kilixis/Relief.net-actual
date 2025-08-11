@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,6 +9,7 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@3.2.12/dist/leaflet-routing-machine.css" />
 </head>
+
 <body>
     <div class="map-container">
         <header class="map-header">
@@ -26,7 +28,7 @@
                 <div class="sidebar-content">
                     <div class="form-card">
                         <h2 id="sidebar-title">Submit Emergency</h2>
-                        
+
                         <div class="location-info">
                             <label>Your Location</label>
                             <div id="location-display" class="location-text">Locating… allow browser location</div>
@@ -63,7 +65,8 @@
 
                             <div class="form-group">
                                 <label for="description">Description</label>
-                                <textarea id="description" placeholder="Describe your situation…" rows="4" class="form-textarea"></textarea>
+                                <textarea id="description" placeholder="Describe your situation…" rows="4"
+                                    class="form-textarea"></textarea>
                             </div>
 
                             <button id="submit-btn" class="btn btn-primary btn-full" disabled>Submit Request</button>
@@ -88,9 +91,35 @@
             </section>
         </main>
     </div>
+    <!-- Add before closing </body> tag -->
+    <button class="ai-chat-button" id="aiChatButton" title="AI Help">
+        <i class="fas fa-robot"></i>
+    </button>
 
+    <div class="ai-chat-container" id="aiChatContainer">
+        <div class="ai-chat-header">
+            <div class="ai-chat-title">
+                <i class="fas fa-robot"></i> AI Emergency Assistant
+            </div>
+            <button class="ai-chat-close" id="aiChatClose">×</button>
+        </div>
+        <div class="ai-chat-messages" id="aiChatMessages">
+            <div class="ai-message assistant">
+                Hello! I'm your AI Emergency Assistant. How can I help you with your current situation?
+            </div>
+        </div>
+        <div class="ai-chat-input-container">
+            <input type="text" class="ai-chat-input" id="aiChatInput" placeholder="Type your message..."
+                maxlength="500">
+            <button class="ai-chat-send" id="aiChatSend">
+                <i class="fas fa-paper-plane"></i>
+            </button>
+        </div>
+    </div>
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="https://unpkg.com/leaflet-routing-machine@3.2.12/dist/leaflet-routing-machine.js"></script>
     <script src="app.js"></script>
+    <script src="ai-chat.js"></script>
 </body>
+
 </html>

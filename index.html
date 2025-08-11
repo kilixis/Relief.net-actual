@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,8 +9,9 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
 </head>
+
 <body>
-    
+
     <nav class="nav-glass">
         <div class="nav-container">
             <div class="nav-brand">
@@ -27,7 +29,7 @@
                 </a>
                 <a href="login.html" class="nav-link">
                     <i class="fas fa-user"></i>
-                    <span>Account</span>
+                    <span>AI Help</span>
                 </a>
                 <a href="#emergency" class="nav-link emergency-link">
                     <i class="fas fa-exclamation-triangle"></i>
@@ -108,6 +110,30 @@
             </div>
         </div>
     </div>
+    <button class="ai-chat-button" id="aiChatButton" title="AI Help">
+        <i class="fas fa-robot"></i>
+    </button>
+
+    <div class="ai-chat-container" id="aiChatContainer">
+        <div class="ai-chat-header">
+            <div class="ai-chat-title">
+                <i class="fas fa-robot"></i> AI Emergency Assistant
+            </div>
+            <button class="ai-chat-close" id="aiChatClose">×</button>
+        </div>
+        <div class="ai-chat-messages" id="aiChatMessages">
+            <div class="ai-message assistant">
+                Hello! I'm your AI Emergency Assistant. How can I help you with your current situation?
+            </div>
+        </div>
+        <div class="ai-chat-input-container">
+            <input type="text" class="ai-chat-input" id="aiChatInput" placeholder="Type your message..."
+                maxlength="500">
+            <button class="ai-chat-send" id="aiChatSend">
+                <i class="fas fa-paper-plane"></i>
+            </button>
+        </div>
+    </div>
 
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script>
@@ -132,10 +158,10 @@
 
         // Smooth scroll for navigation links
         document.querySelectorAll('.nav-link').forEach(link => {
-            link.addEventListener('click', function() {
+            link.addEventListener('click', function () {
                 document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
                 this.classList.add('active');
-                
+
                 if (window.innerWidth <= 768) {
                     navToggle.classList.remove('active');
                     navLinks.classList.remove('active');
@@ -154,7 +180,7 @@
             }
 
             map = L.map('map').setView([lat, lng], 16);
-            
+
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 attribution: '© OpenStreetMap contributors'
             }).addTo(map);
@@ -186,7 +212,7 @@
             });
 
             marker = L.marker([lat, lng], { icon: emergencyIcon }).addTo(map);
-            
+
             // Add enhanced pulsing animation
             if (!document.getElementById('emergency-animations')) {
                 const style = document.createElement('style');
@@ -229,7 +255,7 @@
         function displayCoordinates(lat, lng, accuracy) {
             const now = new Date();
             const googleMapsUrl = `https://maps.google.com/?q=${lat},${lng}`;
-            
+
             coordinates.innerHTML = `
                 <div class="coordinate-item">
                     <span class="coordinate-label">Latitude:</span>
@@ -269,11 +295,11 @@
                 <i class="fas fa-check-circle"></i>
                 Location found! Your exact position has been marked and emergency services can now locate you.
             `, 'success');
-            
+
             initializeMap(lat, lng);
             displayCoordinates(lat, lng, accuracy);
             mapContainer.style.display = 'block';
-            
+
             helpButton.disabled = false;
             helpButton.innerHTML = '<i class="fas fa-sync-alt"></i> Update My Location';
             helpButton.classList.remove('pulse-animation');
@@ -284,23 +310,23 @@
                     <i class="fas fa-ambulance"></i>
                    YOUR CURRENT LOCATION HAS BEEN SENT TO {emergency contacts}
                 `, 'success');
-                
+
                 // Add success sound effect simulation
                 if (window.AudioContext || window.webkitAudioContext) {
                     try {
                         const audioContext = new (window.AudioContext || window.webkitAudioContext)();
                         const oscillator = audioContext.createOscillator();
                         const gainNode = audioContext.createGain();
-                        
+
                         oscillator.connect(gainNode);
                         gainNode.connect(audioContext.destination);
-                        
+
                         oscillator.frequency.value = 800;
                         oscillator.type = 'sine';
-                        
+
                         gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
                         gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
-                        
+
                         oscillator.start(audioContext.currentTime);
                         oscillator.stop(audioContext.currentTime + 0.5);
                     } catch (e) {
@@ -313,8 +339,8 @@
         function getLocationError(error) {
             let errorMessage = '';
             let icon = 'fas fa-exclamation-triangle';
-            
-            switch(error.code) {
+
+            switch (error.code) {
                 case error.PERMISSION_DENIED:
                     errorMessage = 'Location access denied. Please enable location permissions and try again.';
                     icon = 'fas fa-lock';
@@ -331,7 +357,7 @@
                     errorMessage = 'An unknown error occurred. Please try again.';
                     break;
             }
-            
+
             updateStatus(`<i class="${icon}"></i> ${errorMessage}`, 'error');
             helpButton.disabled = false;
             helpButton.innerHTML = '<i class="fas fa-redo"></i> Try Again';
@@ -347,7 +373,7 @@
             helpButton.disabled = true;
             helpButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Locating...';
             helpButton.classList.add('pulse-animation');
-            
+
             updateStatus(`
                 <span class="loading-spinner"></span>
                 Getting your exact location for emergency services...
@@ -372,7 +398,7 @@
         // Enhanced page load behavior
         window.addEventListener('load', () => {
             helpButton.focus();
-            
+
             // Add subtle entrance animations
             setTimeout(() => {
                 helpButton.style.transform = 'scale(1.05)';
@@ -392,5 +418,7 @@
             }
         });
     </script>
+    <script src="ai-chat.js"></script>
 </body>
+
 </html>
