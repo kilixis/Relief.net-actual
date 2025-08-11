@@ -25,6 +25,8 @@ interface HelpRequest {
   disasterType: string;
   resources: string[];
   description: string;
+  victimName: string;
+  victimPhone: string;
   createdAt: number;
 }
 
@@ -39,6 +41,18 @@ const loadRequests = (): HelpRequest[] => {
   }
 };
 const saveRequests = (data: HelpRequest[]) => localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+
+const PROFILE_KEY = "reliefnet-profile";
+type Profile = { name: string; phone: string };
+const loadProfile = (): Profile => {
+  try {
+    const raw = localStorage.getItem(PROFILE_KEY);
+    return raw ? (JSON.parse(raw) as Profile) : { name: "", phone: "" };
+  } catch {
+    return { name: "", phone: "" };
+  }
+};
+const saveProfile = (p: Profile) => localStorage.setItem(PROFILE_KEY, JSON.stringify(p));
 
 // Red pin icon using SVG so we avoid external assets
 function pinIcon(colorHsl: string): DivIcon {
@@ -110,6 +124,20 @@ export default function MapPage() {
   const [resources, setResources] = useState<string>("");
   const [description, setDescription] = useState<string>("");
 
+  // User details
+  const [name, setName] = useState<string>("");
+  const [phone, setPhone] = useState<string>("");
+
+  useEffect(() => {
+    const p = loadProfile();
+    setName(p.name);
+    setPhone(p.phone);
+  }, []);
+
+  useEffect(() => {
+    saveProfile({ name, phone });
+  }, [name, phone]);
+
   // Routing target
   const [routeTo, setRouteTo] = useState<LatLngExpression | null>(null);
 
@@ -140,6 +168,10 @@ export default function MapPage() {
       toast({ title: "Location unavailable", description: "Enable location services to submit a request." });
       return;
     }
+    if (!name || !phone) {
+      toast({ title: "Your details required", description: "Please enter your name and phone number." });
+      return;
+    }
     const [lat, lng] = myLocation as [number, number];
     const newReq: HelpRequest = {
       id: `${Date.now()}`,
@@ -148,6 +180,8 @@ export default function MapPage() {
       disasterType,
       resources: resources.split(",").map((r) => r.trim()).filter(Boolean),
       description,
+      victimName: name,
+      victimPhone: phone,
       createdAt: Date.now(),
     };
     setRequests((prev) => [newReq, ...prev]);
@@ -200,6 +234,17 @@ export default function MapPage() {
                   </div>
                 </div>
 
+                <div className="grid grid-cols-1 gap-3">
+                  <div className="space-y-1">
+                    <Label>Your Name</Label>
+                    <Input value={name} onChange={(e) => setName(e.target.value)} placeholder="Full name" />
+                  </div>
+                  <div className="space-y-1">
+                    <Label>Phone Number</Label>
+                    <Input value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="+91 98765 43210" />
+                  </div>
+                </div>
+
                 {role === "victim" ? (
                   <>
                     <div className="space-y-2">
@@ -243,6 +288,7 @@ export default function MapPage() {
                             <CardContent className="py-3">
                               <div className="text-sm font-medium capitalize">{r.disasterType}</div>
                               <div className="text-xs text-muted-foreground">{new Date(r.createdAt).toLocaleString()}</div>
+                              <div className="text-xs text-muted-foreground">Victim: {r.victimName} • {r.victimPhone}</div>
                               {r.resources.length > 0 && (
                                 <div className="mt-2 flex flex-wrap gap-1">
                                   {r.resources.map((res, i) => (
@@ -252,7 +298,7 @@ export default function MapPage() {
                               )}
                               {r.description && <div className="mt-2 text-sm">{r.description}</div>}
                               <div className="mt-2">
-                                <Button size="sm" onClick={() => setRouteTo([r.lat, r.lng])} disabled={!myLocation}>Respond</Button>
+                                <Button size="sm" onClick={() => setRouteTo([r.lat, r.lng])} disabled={!myLocation || !name || !phone}>Respond</Button>
                               </div>
                             </CardContent>
                           </Card>
@@ -298,6 +344,7 @@ export default function MapPage() {
                 <Popup>
                   <div className="space-y-1">
                     <div className="font-medium capitalize">{r.disasterType}</div>
+                    <div className="text-xs text-muted-foreground">Victim: {r.victimName} • {r.victimPhone}</div>
                     {r.resources.length > 0 && (
                       <div className="flex flex-wrap gap-1">
                         {r.resources.map((res, i) => (
@@ -307,7 +354,7 @@ export default function MapPage() {
                     )}
                     {r.description && <div className="text-sm">{r.description}</div>}
                     {role === "volunteer" && (
-                      <Button size="sm" className="mt-2" onClick={() => setRouteTo([r.lat, r.lng])} disabled={!myLocation}>
+                      <Button size="sm" className="mt-2" onClick={() => setRouteTo([r.lat, r.lng])} disabled={!myLocation || !name || !phone}>
                         Respond
                       </Button>
                     )}
