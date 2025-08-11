@@ -49,11 +49,95 @@ function initializeMap() {
     // Set up event listeners
     setupEventListeners();
     
+    // Set up right-click context menu
+    setupContextMenu();
+    
     // Start location tracking
     startLocationTracking();
     
     // Update UI based on role
     updateUI(role);
+}
+
+// Add new function for context menu setup
+function setupContextMenu() {
+    // Create context menu element
+    const contextMenu = document.createElement('div');
+    contextMenu.className = 'context-menu';
+    contextMenu.style.display = 'none';
+    document.body.appendChild(contextMenu);
+    
+    // Handle right-click on map
+    map.on('contextmenu', function(e) {
+        e.originalEvent.preventDefault();
+        
+        const lat = e.latlng.lat.toFixed(6);
+        const lng = e.latlng.lng.toFixed(6);
+        
+        // Update context menu content
+        contextMenu.innerHTML = `
+            <div class="context-menu-coords">
+                Lat: ${lat}<br>
+                Lng: ${lng}
+            </div>
+            <div class="context-menu-item" data-lat="${lat}" data-lng="${lng}">
+                <span>Copy coordinates</span>
+                <span class="context-menu-copy">📋</span>
+            </div>
+        `;
+        
+        // Position context menu
+        const x = e.originalEvent.clientX;
+        const y = e.originalEvent.clientY;
+        
+        contextMenu.style.left = x + 'px';
+        contextMenu.style.top = y + 'px';
+        contextMenu.style.display = 'block';
+    });
+    
+    // Handle click on copy button
+    contextMenu.addEventListener('click', function(e) {
+        const item = e.target.closest('.context-menu-item');
+        if (item) {
+            const lat = item.dataset.lat;
+            const lng = item.dataset.lng;
+            const coords = `${lat}, ${lng}`;
+            
+            // Copy to clipboard
+            navigator.clipboard.writeText(coords).then(() => {
+                showToast('Copied!', 'Coordinates copied to clipboard');
+            }).catch(() => {
+                // Fallback for older browsers
+                const textArea = document.createElement('textarea');
+                textArea.value = coords;
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+                showToast('Copied!', 'Coordinates copied to clipboard');
+            });
+        }
+        
+        // Hide context menu
+        contextMenu.style.display = 'none';
+    });
+    
+    // Hide context menu when clicking elsewhere
+    document.addEventListener('click', function(e) {
+        if (!contextMenu.contains(e.target)) {
+            contextMenu.style.display = 'none';
+        }
+    });
+    
+    // Hide context menu when map is clicked
+    map.on('click', function() {
+        contextMenu.style.display = 'none';
+    });
+    
+    // Hide context menu when map is moved
+    map.on('movestart', function() {
+        contextMenu.style.display = 'none';
+    });
 }
 
 function createIcons() {

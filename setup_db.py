@@ -8,7 +8,6 @@ load_dotenv()
 
 def create_database():
     try:
-        # Connect to MySQL server
         connection = pymysql.connect(
             host=os.getenv('DB_HOST', 'localhost'),
             user=os.getenv('DB_USER'),
@@ -17,17 +16,13 @@ def create_database():
         )
         
         with connection.cursor() as cursor:
-            # Create database if it doesn't exist
             cursor.execute("CREATE DATABASE IF NOT EXISTS reliefnet")
             logging.info("Database 'reliefnet' created or already exists")
             
-            # Use the database
             cursor.execute("USE reliefnet")
             
-            # Drop table if it exists (for clean setup)
             cursor.execute("DROP TABLE IF EXISTS help_requests")
             
-            # Create table with proper data types
             cursor.execute("""
                 CREATE TABLE IF NOT EXISTS help_requests (
                     id VARCHAR(50) PRIMARY KEY,
@@ -48,7 +43,6 @@ def create_database():
             connection.commit()
             logging.info("Table 'help_requests' created successfully!")
             
-            # Test insert
             cursor.execute("""
                 INSERT INTO help_requests (id, name, phone, resource_type, latitude, longitude, description, timestamp, disaster_type)
                 VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
@@ -62,6 +56,21 @@ def create_database():
                 'Test request',
                 1234567890,
                 'earthquake'
+            ))
+
+            cursor.execute("""
+                INSERT INTO help_requests (id, name, phone, resource_type, latitude, longitude, description, timestamp, disaster_type)
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
+            """, (
+                'jaitpur floods',
+                'Test User',
+                '+1893218599',
+                'water,food',
+                28.50301,
+                77.31847,
+                'Food',
+                1234567890,
+                'flood'
             ))
             
             connection.commit()

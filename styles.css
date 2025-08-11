@@ -360,3 +360,43 @@ body {
         max-height: 60vh;
     }
 }
+
+/* Context Menu for Right-Click Coordinates */
+.context-menu {
+    position: absolute;
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-elegant);
+    padding: 0.5rem;
+    z-index: 1000;
+    min-width: 200px;
+    font-size: 0.875rem;
+}
+
+.context-menu-item {
+    padding: 0.5rem;
+    cursor: pointer;
+    border-radius: calc(var(--radius) - 2px);
+    transition: background-color 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.context-menu-item:hover {
+    background-color: var(--secondary);
+}
+
+.context-menu-coords {
+    font-family: 'Courier New', monospace;
+    font-size: 0.8rem;
+    color: var(--muted-foreground);
+    margin-bottom: 0.25rem;
+}
+
+.context-menu-copy {
+    font-size: 0.75rem;
+    color: var(--accent);
+    font-weight: 500;
+}
