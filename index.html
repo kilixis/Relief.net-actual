@@ -181,7 +181,6 @@
                 attribution: '© OpenStreetMap contributors'
             }).addTo(map);
 
-            // Create custom emergency marker with enhanced styling
             const emergencyIcon = L.divIcon({
                 className: 'emergency-marker',
                 html: `
@@ -300,14 +299,12 @@
             helpButton.innerHTML = '<i class="fas fa-sync-alt"></i> Update My Location';
             helpButton.classList.remove('pulse-animation');
 
-            // Simulate emergency alert with enhanced feedback
             setTimeout(() => {
                 updateStatus(`
                     <i class="fas fa-ambulance"></i>
-                   YOUR CURRENT LOCATION HAS BEEN SENT TO {emergency contacts}
+                   YOUR CURRENT LOCATION HAS BEEN SENT TO EMERGENCY SERVICES
                 `, 'success');
 
-                // Add success sound effect simulation
                 if (window.AudioContext || window.webkitAudioContext) {
                     try {
                         const audioContext = new (window.AudioContext || window.webkitAudioContext)();
